@@ -1,0 +1,54 @@
+---
+title: "Class 6: R Functions - HOMEWORK"
+author: "Derek Zhang (PID: A17819201)"
+format: pdf
+toc: true
+---
+
+## Q6 - Supplemental Function
+
+```{r}
+library(bio3d) # necessary library import
+
+analyze_pdb <- function(pdb_ids = c()) { #uses a vector for 
+  #pdb ids to hold a variable number of pdb ids, generalizable
+  #for any number of pdb ids of reasonable length
+  
+  for (id in pdb_ids) { # iterate through each PDB ID provided
+    
+    pdb <- read.pdb(id) # read the PDB structure from the online 
+    # database
+    
+    chainA <- trim.pdb(pdb, chain = "A", elety = "CA") # limit to 
+    #c hain A alpha-carbon atoms only
+    
+    # secure B-factor values from pdb information
+    b_factors <- chainA$atom$b
+    
+    # plot B-factors with and include properties of the graph 
+    # that were used in the original set
+    plotb3(b_factors,
+           sse = chainA,
+           typ = "l",
+           ylab = "B-factor",
+           main = paste("Protein:", id)) #this last line adds 
+    # an annotation that states which protein this graph is for
+    # and what its pdb ID is
+    
+    #the graph is realistically the only function output
+    #There is no indication of a necessary value or values to be
+    #returned
+  }
+}
+
+# Example usage:
+analyze_pdb(c("4AKE", "1AKE", "1E4Y"))
+#example output would include 3 graphs:
+#each graph has a title protein: and its id:
+#Protein 4AKE, and its relevant graph with B-factor on the 
+#y axis and residue on the x
+#Protein 1AKE, and its relevant graph with B-factor on the 
+#y axis and residue on the x
+#Protein 1E4Y, and its relevant graph with B-factor on the 
+#y axis and residue on the x
+```

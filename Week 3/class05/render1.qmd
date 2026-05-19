@@ -1,0 +1,176 @@
+---
+title: "class05_dataVisGgplot2"
+author: "Derek Zhang (PID: A17819201)"
+format: pdf
+toc: true
+---
+
+## Background
+there are many graphics systems in R for making plots
+These include so-called "base" R graphics like the `plot()` function and add on packages like ggplot2.
+
+We can use the in-built `cars` dataset:
+```{r}
+head(cars)
+```
+
+```{r}
+plot(cars)
+```
+
+The main function in **ggplot2** packet is the ggplot, and we before we run it we must install ggplot2 by running 'install.packages("ggplot2")' in the console
+
+> **N.B.** We never run `install.packages()` in our quarto doc because that would run it each time we render and become problematic
+
+Once installed we need to load up the package into our R session
+```{r}
+#install.packages("ggplot2")
+library(ggplot2)
+ggplot(cars)
+```
+
+Every ggplot has at least 3 layers:
+- The **data** (a data.frame of the stuff we want to plot)
+- The **aesthetics** (how the data maps to the plot)
+- The **geom** layer (how you want the plot drawn, e.g. points, lines, etc.)
+
+```{r}
+ggplot(cars) +
+  aes(x=speed, y=dist) +
+  geom_point()
+```
+
+## Add some custom features
+
+Lets add a trend line that shows the relationship between speed and distance.
+```{r}
+ggplot(cars) +
+  aes(x=speed, y=dist) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  theme_light() +
+  labs(title="Stopping Dist of Old Cars")
+```
+
+## Gene expression figure
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+```
+
+```{r}
+sum(genes$State == "up")
+genes[genes$State=="up",]
+```
+A useful new function in this context is the `table()` function:
+```{r}
+table(genes$State)
+```
+```{r}
+ggplot(genes) +
+  aes(x=Condition1, y=Condition2, color = State) +
+  labs(title = "Gene Expression Changes Upon Drug Treatment", x = "Control (no drug)", y = "Drug Treatment", color = "Legend") +
+  scale_colour_manual( values=c("blue","gray","red") ) +
+  geom_point()
+```
+
+## Going further
+
+Here we read the famous gapmider dataset
+```{r}
+# File location online
+url <- "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
+
+gapminder <- read.delim(url)
+head(gapminder)
+```
+
+> Q. How many entries (i.e. rows) are there in this dataset?
+```{r}
+nrow(gapminder)
+```
+
+> Q. How many countries are in this dataset
+```{r}
+length(table(gapminder$country))
+```
+
+```{r}
+length(unique(gapminder$country))
+```
+
+Let's make our first plot of the dataset:
+```{r}
+p <- ggplot(gapminder) +
+  aes(x = gdpPercap, y = lifeExp) +
+  geom_point(aes(color=continent), alpha = 0.3)
+```
+
+```{r}
+p
+```
+
+```{r}
+p + facet_wrap(~continent)
+```
+
+Now we will make a plot for years 1977 and 2007
+
+```{r}
+library(dplyr)
+gapminder_1977_2007 <- gapminder %>% filter (year == 2007 | year == 1977)
+ggplot(gapminder_1977_2007) +
+  aes(x = gdpPercap, y = lifeExp) +
+  geom_point(aes(color=continent), alpha = 0.3) +
+  facet_wrap(~year)
+```
+
+> Q. Make a histogram of lifeExp faceted by continent and colored by continent
+
+Faceted by continent:
+```{r}
+ggplot(gapminder) +
+  aes(lifeExp) +
+  geom_histogram() +
+  facet_wrap(~continent)
+```
+
+Coloured by continent:
+```{r}
+ggplot(gapminder) +
+  aes(lifeExp) +
+  geom_histogram(aes(fill=continent))
+```
+## Optional: Bar Charts!!
+
+Organizing gapminder into the top 5 values of population in descending order in the year 2007
+```{r}
+gapminder_top5 <- gapminder %>% 
+  filter(year==2007) %>% 
+  arrange(desc(pop)) %>% 
+  top_n(5, pop)
+
+gapminder_top5
+```
+
+Creating the bar chart:
+```{r}
+ggplot(gapminder_top5) + 
+  geom_col(aes(x = country, y = pop))
+```
+
+> Q. How do you do this for life expectancy?
+
+```{r}
+gapminder_top5_lifeExp<- gapminder %>% 
+  filter(year==2007) %>% 
+  arrange(desc(lifeExp)) %>% 
+  top_n(5, lifeExp)
+
+gapminder_top5_lifeExp
+
+ggplot(gapminder_top5_lifeExp) + 
+  geom_col(aes(x = country, y = lifeExp))
+```

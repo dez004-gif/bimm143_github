@@ -1,0 +1,43 @@
+---
+title: "Class 7: Machine Learning 2"
+author: "Derek Zhang (PID: A17819201)"
+format: html
+toc: true
+---
+
+## Principal Component Analysis
+
+## Data Import:
+
+Importing the data below:
+
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url)
+```
+
+> Q1. How many rows and columns are in your new data frame named x? What R functions could you use to answer this question?
+
+We can use the dim(df) function. This function returns the dimensions of the data frame in rows x cols.
+
+```{r}
+## Complete the following code to find out how many rows and columns are in x?
+dim(x)
+```
+
+Checking the first 6 rows is done with `head()`
+
+```{r}
+head(x)
+```
+
+Correcting the row-names problem presented by the row indexes being present as the first row
+
+```{r}
+# Note how the minus indexing works
+x <- read.csv(url, row.names=1)
+head(x)
+dim(x)
+```
+
+> Q2. The second method of `read.csv(url, row.names=1)` is more robust, as it is a direct read from the source and makes an un-redundant adjustment. When running the other version `x[,-1]`, if ran more than once, there is a risk of deleting more information than desired.

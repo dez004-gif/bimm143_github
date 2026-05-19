@@ -1,0 +1,242 @@
+---
+title: "Class 13"
+author: "Derek Zhang, PID: 17819201"
+format: pdf
+toc: true
+editor: visual
+---
+
+## Importing data: Setup
+
+```{r}
+library(BiocManager)
+library(DESeq2)
+counts <- read.csv("airway_scaledcounts.csv", row.names=1)
+metadata <-  read.csv("airway_metadata.csv")
+head(counts)
+head(metadata)
+```
+
+> Q1. There are 38694 genes in the dataset.
+>
+> ```{r}
+> nrow(counts)
+> ```
+
+> Q2. There are 4 control cell lines
+>
+> ```{r}
+> table(metadata$dex)
+> ```
+
+## Toy differential gene expression
+
+```{r}
+control.inds <- metadata$dex == "control"
+control.counts<- counts[ ,control.inds]
+control.mean <- rowMeans(control.counts)
+head(control.mean)
+#no new functions here
+```
+
+```{r}
+library(dplyr)
+control <- metadata %>% filter(dex=="control") #pipe usage from dplyr allows for
+#streamlined dataframe modification and processing
+control.counts <- counts %>% select(control$id)  
+control.mean <- rowSums(control.counts)/4
+head(control.mean)
+```
+
+> Q3. You can make the code above more robust by changing the hardcoded 4, to an adaptable version to count the number of control values:
+>
+> ```{r}
+> control.mean <- rowSums(control.counts)/sum(metadata$dex=="control")
+> #instead of 
+> control.mean <- rowSums(control.counts)/4
+> ```
+>
+> Q4.
+>
+> ```{r}
+> treated <- metadata[metadata[,"dex"]=="treated",]
+> treated.mean <- rowSums( counts[ ,treated$id] )/sum(metadata$dex=="treated")
+> head(treated.mean)
+> ```
+
+Combining meancount data:
+
+```{r}
+meancounts <- data.frame(control.mean, treated.mean)
+head(meancounts)
+```
+
+```{r}
+library(ggplot2)
+ggplot(meancounts, aes(y = treated.mean, x = control.mean)) +
+  geom_point()
+```
+
+> Q5. `Geom_point()` is the function used to generate the dot graph.
+>
+> Q6. `log="xy"` is the argument to add to `plot()`
+>
+> ```{r}
+> plot(meancounts, log="xy")
+> ```
+
+```{r}
+meancounts$log2fc <- log2(meancounts[,"treated.mean"]/meancounts[,"control.mean"]) 
+head(meancounts)
+zero.vals <- which(meancounts[,1:2]==0, arr.ind=TRUE) #which applies a boolean to each value in a list to see
+# which rows satisfy the condition
+
+to.rm <- unique(zero.vals[,1]) #returns a vector of unique values
+mycounts <- meancounts[-to.rm,]
+head(mycounts)
+```
+
+> Q7. The purpose of `arr.ind` in the `which()` function is to return the row and column indices for where there are the boolean true values, this would be necessary to avoid extracting zero values, which we want to avoid. Calling unique will then make sure there is no redundancy in counting of identical row samples.
+>
+> ```{r}
+> up.ind <- mycounts$log2fc > 2
+> down.ind <- mycounts$log2fc < (-2)
+> ```
+>
+> Q8. There are 250 up-regulated genes greater than 2-fc level
+>
+> ```{r}
+> sum(up.ind)
+> ```
+>
+> Q9. There are 367 down-regulated genes.
+>
+> ```{r}
+> sum(down.ind)
+> ```
+>
+> Q10. No, these results should not be trusted. The analysis only considers fold change magnitude, but a large fold change by itsself doesn't tell us whether the difference is statistically significant. We have no p-values here, so we have no way of knowing if these expression differences are statistically significant. We need a proper statistical processing with DESeq before drawing any real conclusions about differential expression.
+
+## Setting up for DESeq
+
+```{r}
+library(DESeq2)
+citation("DESeq2")
+dds <- DESeqDataSetFromMatrix(countData=counts, #runs a DESeq dataset analysis
+                              colData=metadata, 
+                              design=~dex)
+dds
+#countData are gene counts across different experiments
+#colData is our metadata about those count columns
+```
+
+```{r}
+dds <- DESeq(dds)
+res <- results(dds) #results of the DESeq analysis
+head(res)
+```
+
+## Volcano Plot
+
+```{r}
+library(ggplot2)
+ggplot(res) +
+  aes(x = log2FoldChange, y = padj) +
+  geom_point()
+```
+
+That plot is not very useful because we do not care about plots with extremely high p-values
+
+```{r}
+library(ggplot2)
+ggplot(res) +
+  aes(x = log2FoldChange, y = -log(padj)) + #log2FoldChange applies a logarithm sacle to a variable
+  geom_point(alpha = 0.3) +
+  geom_hline(yintercept=-log(0.05), col = "darkgray", linetype="dashed") + #vline and hline allow the addition
+  #of a horizontal and vertical line in order to show critical cutoff values
+  geom_vline(xintercept=c(-2,2), col="darkgray", linetype="dashed")
+```
+
+## Annotations DBI
+
+> Q11. Completing the code below, adding "GENENAME" and "ENTREZID" and "UNIPROT"
+>
+> ```{r}
+> library("AnnotationDbi")
+> library("org.Hs.eg.db")
+> >
+> columns(org.Hs.eg.db)
+> >
+> res$entrez <- mapIds(org.Hs.eg.db,
+>                      keys=row.names(res),
+>                      column="ENTREZID",
+>                      keytype="ENSEMBL",
+>                      multiVals="first")
+> >
+> res$uniprot <- mapIds(org.Hs.eg.db,
+>                      keys=row.names(res),
+>                      column="UNIPROT",
+>                      keytype="ENSEMBL",
+>                      multiVals="first")
+> >
+> res$genename <- mapIds(org.Hs.eg.db,
+>                      keys=row.names(res),
+>                      column="GENENAME",
+>                      keytype="ENSEMBL",
+>                      multiVals="first")
+> >
+> head(res, 10)
+> ```
+
+## Pathway Analysis
+
+```{r}
+library(pathview)
+library(gage)
+library(gageData)
+
+data(kegg.sets.hs)
+
+# Examine the first 2 pathways in this kegg set for humans
+head(kegg.sets.hs, 2)
+```
+
+```{r}
+foldchanges = res$log2FoldChange
+names(foldchanges) = res$entrez
+head(foldchanges)
+
+# Get the results
+keggres = gage(foldchanges, gsets=kegg.sets.hs)
+```
+
+```{r}
+attributes(keggres)
+```
+
+```{r}
+# Look at the first three down (less) pathways
+head(keggres$less, 3)
+```
+
+```{r}
+pathview(gene.data=foldchanges, pathway.id="hsa05310")
+```
+
+> Q12. The top 2 down-regulated pathways from `keggres$less` are hsa05332 (Graft-versus-host disease) and hsa04940 (Type I diabetes mellitus).
+>
+> ```{r}
+> # Pathview figures for top 2 down-regulated pathways
+> pathview(gene.data=foldchanges, pathway.id="hsa05332")
+> pathview(gene.data=foldchanges, pathway.id="hsa04940")
+> ```
+
+![](images/clipboard-2530968138.png)
+
+![](images/clipboard-395323950.png)
+
+## Saving our annotated results
+
+```{r}
+write.csv(res, file="myresults_annotated.csv")
+```
