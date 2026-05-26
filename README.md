@@ -22,6 +22,6 @@ Class 11: [Structural Bioinformatics Pt 2](Class%2011/Class%2011.md)
 
 Class 12: [Genome Informatics](Class%2012/Class%2012.md)
 
-Class 13: [Transcriptomics and RNA-seq Analysis](Class%2013/Class%2013.md)
+Class 13: [Transcriptomics and RNA-seq Analysis](Class%2013/Class-13.md)
 
 Class 13: [RNA-seq mini project](<Class 14/Class 14.pdf>)
