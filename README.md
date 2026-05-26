@@ -16,7 +16,7 @@ Class 8: [Unsupervised Learning Mini-Project](Class08/Class08.md)
 
 Class 9: [Candy mini-project](Class%2009/Class%2009.md)
 
-Class 10: [Structural Bioinformatics](Class_10/Class_10.md)
+Class 10: [Structural Bioinformatics](Class%2010/Class_10.md)
 
 Class 11: [Structural Bioinformatics Pt 2](<Class%2011/Class%2011.md>)
 
