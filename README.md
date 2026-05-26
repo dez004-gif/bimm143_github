@@ -10,11 +10,11 @@ Class 6: [Writing our own R functions](Class06/Class06.md)
 
 Class 7: [Machine Learning for Bioinformatics](Class%2007/Class%2007.md)
 
-Class 8: [Unsupervised Learning Mini-Project](<Class 08/Class 08.md>)
+Class 8: [Unsupervised Learning Mini-Project](Class%2008/Class%2008.md)
 
-Class 9: [Candy mini-project](<Class 09/Class 09.md>)
+Class 9: [Candy mini-project](Class%2009/Class%2009.md)
 
-Class 10: [Structural Bioinformatics](<Class 10/Class 10.md>)
+Class 10: [Structural Bioinformatics](Class%2010/Class%2010.md)
 
 Class 11: [Structural Bioinformatics Pt 2](<Class 11/Class 11.md>)
 
