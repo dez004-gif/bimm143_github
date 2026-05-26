@@ -4,7 +4,7 @@ My classwork from [BIMM143 at UC San Diego Spring 2026](https://dez004-gif.githu
 ## Index of classes
 Class 4: [Introduction to R]()
 
-Class 5: [Data viz with ggplot2](Week 3/class05/render1.pdf)
+Class 5: [Data viz with ggplot2](Week3/class05/render1.pdf)
 
 Class 6: [Writing our own R functions]()
 
