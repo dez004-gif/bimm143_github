@@ -12,7 +12,7 @@ Class 7-pt1: [Machine Learning for Bioinformatics](Class%2007/Class%2007.md)
 
 Class 7-pt2: [Machine Learning for Bioinformatics pt2 - PCA](Class%2007/Class%2007%20part%202%20-%20PCA.md)
 
-Class 8: [Unsupervised Learning Mini-Project](Class08/Class08.md)
+Class 8: [Unsupervised Learning Mini-Project](Class%2008/Class08.md)
 
 Class 9: [Candy mini-project](Class%2009/Class%2009.md)
 
