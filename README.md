@@ -2,7 +2,7 @@
 My classwork from [BIMM143 at UC San Diego Spring 2026](https://dez004-gif.github.io/bimm143_github/)
 
 ## Index of classes
-Class 4: [Introduction to R](Weeks1-2/class04/classlab04.pdf)
+Class 4: [Introduction to R](Weeks1-2/class04/class04lab.pdf)
 
 Class 5: [Data viz with ggplot2](Week3/class05/render1.md)
 
