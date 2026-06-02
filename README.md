@@ -2,7 +2,7 @@
 My classwork from [BIMM143 at UC San Diego Spring 2026](https://dez004-gif.github.io/bimm143_github/)
 
 ## Index of classes
-Class 4: [Introduction to R](Weeks1-2/class04/lab04.md)
+Class 4: [Introduction to R](Weeks1-2/class04/classlab04.md)
 
 Class 5: [Data viz with ggplot2](Week3/class05/render1.md)
 
@@ -24,4 +24,4 @@ Class 12: [Genome Informatics](Class12/Class12.md)
 
 Class 13: [Transcriptomics and RNA-seq Analysis](Class13/Class-13.md)
 
-Class 13: [RNA-seq mini project](<Class 14/Class 14.pdf>)
+Class 13: [RNA-seq mini project](Class14/Class-14.pdf)
