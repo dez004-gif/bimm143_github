@@ -24,4 +24,4 @@ Class 12: [Genome Informatics](Class12/Class12.md)
 
 Class 13: [Transcriptomics and RNA-seq Analysis](Class13/Class-13.md)
 
-Class 13: [RNA-seq mini project](Class14/Class_14.md)
+Class 14: [RNA-seq mini project](Class14/Class_14.md)
